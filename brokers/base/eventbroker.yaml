@@ -7,4 +7,4 @@ spec:
   redundancy: false
   # Name of a Secret holding the admin password (see secrets/admin-secret.example.yaml).
   # Uncomment once the Secret is delivered by your secrets tooling.
-  # adminCredentialsSecret: solace-broker-admin
+  adminCredentialsSecret: solace-broker-admin

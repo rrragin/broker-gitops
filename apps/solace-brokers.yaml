@@ -16,9 +16,9 @@ spec:
           - env: dev
             server: https://kubernetes.default.svc   # TODO
             namespace: solace-dev
-          - env: prod
-            server: https://kubernetes.default.svc   # TODO: prod cluster URL
-            namespace: solace-prod
+#          - env: prod
+#            server: https://kubernetes.default.svc   # TODO: prod cluster URL
+#            namespace: solace-prod
   template:
     metadata:
       name: 'solace-broker-{{ .env }}'
