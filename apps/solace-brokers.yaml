@@ -1,0 +1,48 @@
+# One broker Application per environment, generated from the list below.
+# Add a cluster entry (registered in Argo CD) to deploy to another cluster.
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: solace-brokers
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"   # after the operator app
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - list:
+        elements:
+          - env: dev
+            server: https://kubernetes.default.svc   # TODO
+            namespace: solace-dev
+          - env: prod
+            server: https://kubernetes.default.svc   # TODO: prod cluster URL
+            namespace: solace-prod
+  template:
+    metadata:
+      name: 'solace-broker-{{ .env }}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/rrragin/broker-gitops.git   # TODO
+        targetRevision: main
+        path: 'brokers/overlays/{{ .env }}'
+      destination:
+        server: '{{ .server }}'
+        namespace: '{{ .namespace }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+          # CRD may not be registered yet on the very first sync
+          - SkipDryRunOnMissingResource=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 30s
+            factor: 2
+            maxDuration: 5m

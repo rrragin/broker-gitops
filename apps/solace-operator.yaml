@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: solace-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"   # operator + CRD first
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/rrragin/broker-gitops.git   # TODO
+    targetRevision: main
+    path: operator
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: pubsubplus-operator-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true   # the CRD is large; avoids the client-side annotation size limit

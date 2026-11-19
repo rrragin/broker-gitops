@@ -1,0 +1,24 @@
+# Bootstrap once:  kubectl apply -n argocd -f apps/root.yaml
+# The root app then manages everything else under apps/ (except this file).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: solace-root
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/rrragin/broker-gitops.git   # TODO
+    targetRevision: main
+    path: apps
+    directory:
+      exclude: root.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -1,0 +1,10 @@
+apiVersion: pubsubplus.solace.com/v1beta1
+kind: PubSubPlusEventBroker
+metadata:
+  name: solace-broker
+spec:
+  # Overlays set redundancy (HA vs standalone), developer mode and storage.
+  redundancy: false
+  # Name of a Secret holding the admin password (see secrets/admin-secret.example.yaml).
+  # Uncomment once the Secret is delivered by your secrets tooling.
+  # adminCredentialsSecret: solace-broker-admin
